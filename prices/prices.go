@@ -4,21 +4,26 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
+
+	"github.com/roryjarrard/go-price-calculator/conversion"
 )
 
+// TaxIncludedPriceJob represents a job to calculate tax-included prices.
 type TaxIncludedPriceJob struct {
 	TaxRate           float64
 	InputPrices       []float64
 	TaxIncludedPrices map[string]float64
 }
 
+// LoadData loads prices from a file and converts them to float64.
 func (job *TaxIncludedPriceJob) LoadData() {
 	file, err := os.Open("prices.txt")
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return
 	}
+
+	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 
@@ -31,28 +36,19 @@ func (job *TaxIncludedPriceJob) LoadData() {
 	err = scanner.Err()
 	if err != nil {
 		fmt.Println("Error reading file:", err)
-		file.Close()
 		return
 	}
 
-	prices := make([]float64, len(lines))
-
-	for lineIndex, line := range lines {
-		floatPrice, err := strconv.ParseFloat(line, 64)
-
-		if err != nil {
-			fmt.Println("Error converting price:", err)
-			file.Close()
-			return
-		}
-
-		prices[lineIndex] = floatPrice
+	prices, err := conversion.StringsToFloats(lines)
+	if err != nil {
+		fmt.Println("Error converting prices:", err)
+		return
 	}
 
 	job.InputPrices = prices
-	file.Close()
 }
 
+// Process calculates tax-included prices and prints the results.
 func (job *TaxIncludedPriceJob) Process() {
 	job.LoadData()
 
@@ -66,6 +62,7 @@ func (job *TaxIncludedPriceJob) Process() {
 	fmt.Println(result)
 }
 
+// NewTaxIncludedPriceJob creates a new TaxIncludedPriceJob with the given tax rate.
 func NewTaxIncludedPriceJob(taxRate float64) *TaxIncludedPriceJob {
 	return &TaxIncludedPriceJob{
 		InputPrices: []float64{10, 20, 30},
