@@ -9,10 +9,10 @@ import (
 
 // TaxIncludedPriceJob represents a job to calculate tax-included prices.
 type TaxIncludedPriceJob struct {
-	IOManager         filemanager.FileManager
-	TaxRate           float64
-	InputPrices       []float64
-	TaxIncludedPrices map[string]string
+	IOManager         filemanager.FileManager `json:"-"`
+	TaxRate           float64                 `json:"tax_rate"`
+	InputPrices       []float64               `json:"input_prices"`
+	TaxIncludedPrices map[string]string       `json:"tax_included_prices"`
 }
 
 // LoadData loads prices from a file and converts them to float64.
