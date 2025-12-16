@@ -1,11 +1,10 @@
 package prices
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 
 	"github.com/roryjarrard/go-price-calculator/conversion"
+	"github.com/roryjarrard/go-price-calculator/filemanager"
 )
 
 // TaxIncludedPriceJob represents a job to calculate tax-included prices.
@@ -17,25 +16,9 @@ type TaxIncludedPriceJob struct {
 
 // LoadData loads prices from a file and converts them to float64.
 func (job *TaxIncludedPriceJob) LoadData() {
-	file, err := os.Open("prices.txt")
+	lines, err := filemanager.ReadLines("prices.txt")
 	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
-
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-
-	var lines []string
-
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-
-	err = scanner.Err()
-	if err != nil {
-		fmt.Println("Error reading file:", err)
+		fmt.Println("Error loading lines from file:", err)
 		return
 	}
 
