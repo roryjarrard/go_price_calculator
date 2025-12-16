@@ -4,15 +4,15 @@ import (
 	"fmt"
 
 	"github.com/roryjarrard/go-price-calculator/conversion"
-	"github.com/roryjarrard/go-price-calculator/filemanager"
+	"github.com/roryjarrard/go-price-calculator/iomanager"
 )
 
 // TaxIncludedPriceJob represents a job to calculate tax-included prices.
 type TaxIncludedPriceJob struct {
-	IOManager         filemanager.FileManager `json:"-"`
-	TaxRate           float64                 `json:"tax_rate"`
-	InputPrices       []float64               `json:"input_prices"`
-	TaxIncludedPrices map[string]string       `json:"tax_included_prices"`
+	IOManager         iomanager.IOManager `json:"-"`
+	TaxRate           float64             `json:"tax_rate"`
+	InputPrices       []float64           `json:"input_prices"`
+	TaxIncludedPrices map[string]string   `json:"tax_included_prices"`
 }
 
 // LoadData loads prices from a file and converts them to float64.
@@ -49,9 +49,9 @@ func (job *TaxIncludedPriceJob) Process() {
 }
 
 // NewTaxIncludedPriceJob creates a new TaxIncludedPriceJob with the given tax rate.
-func NewTaxIncludedPriceJob(fm filemanager.FileManager, taxRate float64) *TaxIncludedPriceJob {
+func NewTaxIncludedPriceJob(m iomanager.IOManager, taxRate float64) *TaxIncludedPriceJob {
 	return &TaxIncludedPriceJob{
-		IOManager:   fm,
+		IOManager:   m,
 		InputPrices: []float64{10, 20, 30},
 		TaxRate:     taxRate,
 	}

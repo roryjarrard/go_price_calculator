@@ -39,6 +39,7 @@ func (fm FileManager) ReadLines() ([]string, error) {
 	return lines, nil
 }
 
+// WriteResult writes input data to json file
 func (fm FileManager) WriteResult(data interface{}) error {
 	file, err := os.Create(fm.OutputFilePath)
 	if err != nil {
@@ -55,6 +56,7 @@ func (fm FileManager) WriteResult(data interface{}) error {
 	return nil
 }
 
+// New instantiates a new FileManager instance
 func New(inputPath, outputPath string) FileManager {
 	return FileManager{
 		InputFilePath:  inputPath,
