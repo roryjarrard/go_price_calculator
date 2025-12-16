@@ -16,25 +16,27 @@ type TaxIncludedPriceJob struct {
 }
 
 // LoadData loads prices from a file and converts them to float64.
-func (job *TaxIncludedPriceJob) LoadData() {
+func (job *TaxIncludedPriceJob) LoadData() error {
 	lines, err := job.IOManager.ReadLines()
 	if err != nil {
-		fmt.Println("Error loading lines from file:", err)
-		return
+		return err
 	}
 
 	prices, err := conversion.StringsToFloats(lines)
 	if err != nil {
-		fmt.Println("Error converting prices:", err)
-		return
+		return err
 	}
 
 	job.InputPrices = prices
+	return nil
 }
 
 // Process calculates tax-included prices and prints the results.
-func (job *TaxIncludedPriceJob) Process() {
-	job.LoadData()
+func (job *TaxIncludedPriceJob) Process() error {
+	err := job.LoadData()
+	if err != nil {
+		return err
+	}
 
 	result := make(map[string]string)
 
@@ -45,7 +47,12 @@ func (job *TaxIncludedPriceJob) Process() {
 
 	job.TaxIncludedPrices = result
 
-	job.IOManager.WriteResult(job)
+	err = job.IOManager.WriteResult(job)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // NewTaxIncludedPriceJob creates a new TaxIncludedPriceJob with the given tax rate.
